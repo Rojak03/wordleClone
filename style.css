@@ -1,0 +1,21 @@
+#game-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-width: 300px;
+    margin: 20px auto;
+    justify-items: center;
+    align-items: center;
+}
+
+.letter-box {
+    height: 45px;
+    width: 45px;
+    font-size: 30px;
+    text-transform: uppercase;
+    border: 3px solid #ccc;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
