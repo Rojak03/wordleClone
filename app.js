@@ -1,4 +1,19 @@
-addEventListener("keyup", (event) => { 
+document.addEventListener("keyup", (event) => { 
     console.log(event);
-    document.getElementById("item1").innerText = event.key;
+    if (isLetter(event.key)){
+      handleInput(event.key);
+    }
+    else if (event.key === "Backspace"){
+    }
+    else if (event.key === "Enter"){
+    }
+
+
 })
+function isLetter(letter) {
+  return /^[a-zA-Z]$/.test(letter);
+}
+function handleInput(key){
+
+
+}
