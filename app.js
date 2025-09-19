@@ -19,7 +19,7 @@ document.addEventListener("keyup", (event) => {
   }
   else if (event.key === "Enter") {
     // submit word
-
+    submitGuess();
   }
 
 
@@ -42,10 +42,19 @@ function backspace() {
   currentGuess = currentGuess.substring(0, currentGuess.length - 1);
   letters[currentRound * ANSWER_LENGTH + currentGuess.length].innerText = "";
 }
-function submitGuess() {
+async function submitGuess() {
   if (currentGuess.length !== ANSWER_LENGTH) {
     return;
   }
+  const validWord = await fetch("https://words.dev-apis.com/validate-word", {
+    method: "POST",
+    body: JSON.stringify({ word: currentGuess })
+  });
+  if (!validWord.valid) {
+    alert("Not a valid word");
+    return;
+  }
+
   //check if word is real
   let wordOfTheDay;
   async function getWordOfTheDay() {
@@ -54,5 +63,5 @@ function submitGuess() {
     wordOfTheDay = data.word.toUpperCase();
     console.log(wordOfTheDay);
   }
-
-  init();
+}
+init();
