@@ -5,14 +5,23 @@ const loadingDiv = document.querySelector(".info-bar");
 let currentGuess = "";
 let currentRound = 0;
 let done = false;
-function init() {
+let wordOfTheDay;
 
-  getWordOfTheDay();
+async function getWordOfTheDay() {
+  const res = await fetch("https://words.dev-apis.com/word-of-the-day");
+  const data = await res.json();
+  wordOfTheDay = data.word.toUpperCase();
+  console.log(wordOfTheDay);
+}
+async function init() {
+
+  await getWordOfTheDay();
 }
 document.addEventListener("keyup", (event) => {
   console.log(event);
   if (isLetter(event.key)) {
-    handleInput(event.key);
+    const letter = event.key.toUpperCase();
+    handleInput(letter);
   }
   else if (event.key === "Backspace") {
     backspace();
@@ -46,22 +55,41 @@ async function submitGuess() {
   if (currentGuess.length !== ANSWER_LENGTH) {
     return;
   }
-  const validWord = await fetch("https://words.dev-apis.com/validate-word", {
+  const res = await fetch("https://words.dev-apis.com/validate-word", {
     method: "POST",
-    body: JSON.stringify({ word: currentGuess })
+    body: JSON.stringify({ word: currentGuess }),
   });
-  if (!validWord.valid) {
+
+  const isvalid = await res.json();
+  if (!isvalid.validWord) {
     alert("Not a valid word");
     return;
   }
-
-  //check if word is real
-  let wordOfTheDay;
-  async function getWordOfTheDay() {
-    const res = await fetch("https://words.dev-apis.com/word-of-the-day");
-    const data = await res.json();
-    wordOfTheDay = data.word.toUpperCase();
-    console.log(wordOfTheDay);
+  // TODO: check the guess against the word of the day
+  for (let i = 0; i < ANSWER_LENGTH; i++) {
+    const letterBox = letters[currentRound * ANSWER_LENGTH + i];
+    const letter = currentGuess[i];
+    if (letter === wordOfTheDay[i]) {
+      letterBox.classList.add("correct");
+    } else if (wordOfTheDay.includes(letter)) {
+      letterBox.classList.add("wrong-location");
+    } else {
+      letterBox.classList.add("wrong");
+    }
   }
+  if (currentGuess === wordOfTheDay) {
+    alert("You win!");
+    done = true;
+    return;
+  } else if (currentRound === ROUNDS - 1) {
+    alert(`You lose! The word was ${wordOfTheDay}`);
+    done = true;
+    return;
+  }
+  currentRound++;
+  currentGuess = "";
+
+
+
 }
 init();

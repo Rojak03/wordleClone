@@ -19,3 +19,18 @@
     align-items: center;
     justify-content: center;
 }
+
+.correct {
+    background-color: green;
+    color: white;
+}
+
+.wrong-location {
+    background-color: yellow;
+    color: black;
+}
+
+.wrong {
+    background-color: red;
+    color: white;
+}
